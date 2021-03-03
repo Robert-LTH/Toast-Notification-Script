@@ -726,7 +726,11 @@ function Display-ToastNotification() {
     $ToastXml.LoadXml($Toast.OuterXml)
     # Display the toast notification
     try {
-        [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($App).Show($ToastXml)
+        $ToastNotification = New-Object -TypeName Windows.UI.Notifications.ToastNotification -ArgumentList $ToastXml
+        $ToastNotification.ExpiresOnReboot = $ExpiredOnReboot
+        $ToastNotification.Group = $ToastGroup
+        $ToastNotification.Tag = $ToastTag
+        [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($App).Show($ToastNotification)
         Write-Log -Message "All good. Toast notification was displayed"
         # Using Write-Output for sending status to IME log when used with Endpoint Analytics in Intune
         Write-Output "All good. Toast notification was displayed"
@@ -1305,6 +1309,11 @@ if(-NOT[string]::IsNullOrEmpty($Xml)) {
         $ActionButton2Enabled = $Xml.Configuration.Option | Where-Object {$_.Name -like 'ActionButton2'} | Select-Object -ExpandProperty 'Enabled'
         $DismissButtonEnabled = $Xml.Configuration.Option | Where-Object {$_.Name -like 'DismissButton'} | Select-Object -ExpandProperty 'Enabled'
         $SnoozeButtonEnabled = $Xml.Configuration.Option | Where-Object {$_.Name -like 'SnoozeButton'} | Select-Object -ExpandProperty 'Enabled'
+
+        $ExpiredOnReboot = $Xml.Configuration.Option | Where-Object {$_.Name -like 'ExpiresOnReboot'} | Select-Object -ExpandProperty 'Value'
+        $ToastTag = $Xml.Configuration.Option | Where-Object {$_.Name -like 'Tag'} | Select-Object -ExpandProperty 'Value'
+        $ToastGroup = $Xml.Configuration.Option | Where-Object {$_.Name -like 'Group'} | Select-Object -ExpandProperty 'Value'
+
         # Multi language support
         if ($MultiLanguageSupport -eq "True") {
             Write-Log -Message "MultiLanguageSupport set to True. Current language culture is $userCulture. Checking for language support"
