@@ -727,7 +727,10 @@ function Display-ToastNotification() {
     # Display the toast notification
     try {
         $ToastNotification = New-Object -TypeName Windows.UI.Notifications.ToastNotification -ArgumentList $ToastXml
-        $ToastNotification.ExpiresOnReboot = $ExpiredOnReboot
+        # ExpiresOnReboot became available in 1903
+        if ([int]$RunningOS.BuildNumber -ge [int]18362) {
+            $ToastNotification.ExpiresOnReboot = $ExpiredOnReboot
+        }
         $ToastNotification.Group = $ToastGroup
         $ToastNotification.Tag = $ToastTag
         [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($App).Show($ToastNotification)
