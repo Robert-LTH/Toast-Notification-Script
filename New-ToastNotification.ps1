@@ -729,7 +729,7 @@ function Display-ToastNotification() {
         $ToastNotification = New-Object -TypeName Windows.UI.Notifications.ToastNotification -ArgumentList $ToastXml
         # ExpiresOnReboot became available in 1903
         if ([int]$RunningOS.BuildNumber -ge [int]18362) {
-            $ToastNotification.ExpiresOnReboot = $ExpiredOnReboot
+            $ToastNotification.ExpiresOnReboot = $ExpiresOnReboot
         }
         $ToastNotification.Group = $ToastGroup
         $ToastNotification.Tag = $ToastTag
@@ -1313,7 +1313,7 @@ if(-NOT[string]::IsNullOrEmpty($Xml)) {
         $DismissButtonEnabled = $Xml.Configuration.Option | Where-Object {$_.Name -like 'DismissButton'} | Select-Object -ExpandProperty 'Enabled'
         $SnoozeButtonEnabled = $Xml.Configuration.Option | Where-Object {$_.Name -like 'SnoozeButton'} | Select-Object -ExpandProperty 'Enabled'
 
-        $ExpiredOnReboot = $Xml.Configuration.Option | Where-Object {$_.Name -like 'ExpiresOnReboot'} | Select-Object -ExpandProperty 'Value'
+        $ExpiresOnReboot = $Xml.Configuration.Option | Where-Object {$_.Name -like 'ExpiresOnReboot'} | Select-Object -ExpandProperty 'Value'
         $ToastTag = $Xml.Configuration.Option | Where-Object {$_.Name -like 'Tag'} | Select-Object -ExpandProperty 'Value'
         $ToastGroup = $Xml.Configuration.Option | Where-Object {$_.Name -like 'Group'} | Select-Object -ExpandProperty 'Value'
 
